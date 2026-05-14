@@ -5,7 +5,9 @@
       "Bash(mv src/LetterButton.js src/LetterButton.jsx)",
       "Bash(mv src/KnownLetter.js src/KnownLetter.jsx)",
       "Bash(mv src/UnknownLetter.js src/UnknownLetter.jsx)",
-      "Bash(mv src/Results.js src/Results.jsx)"
+      "Bash(mv src/Results.js src/Results.jsx)",
+      "Bash(npm test:*)",
+      "Bash(npx vitest:*)"
     ]
   }
 }

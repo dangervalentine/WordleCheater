@@ -43,8 +43,11 @@ export default function GuessGrid({ rows, onRowsChange }: GuessGridProps) {
       // Transition to color mode with inherited colors
       newRows[rowIndex] = { ...newRows[rowIndex], mode: "color", colors: inheritedColors };
 
-      // Add new input row if under max
-      if (newRows.length < MAX_ROWS) {
+      // Only add new input row if all colors are already set (e.g. fully inherited)
+      // but NOT if all colors are green (puzzle solved)
+      const allColorsSet = inheritedColors.every((c) => c !== "unset");
+      const allGreen = inheritedColors.every((c) => c === "green");
+      if (allColorsSet && !allGreen && newRows.length < MAX_ROWS) {
         newRows.push(createEmptyRow());
       }
     }
@@ -63,6 +66,17 @@ export default function GuessGrid({ rows, onRowsChange }: GuessGridProps) {
       newColors[tileIndex] = color;
       return { ...r, colors: newColors };
     });
+
+    // Add new input row once all colors in this row are assigned
+    // but NOT if all colors are green (puzzle solved)
+    const updatedRow = newRows[rowIndex];
+    const allSet = updatedRow.colors.every((c) => c !== "unset");
+    const allGreen = updatedRow.colors.every((c) => c === "green");
+    const hasInputRow = newRows.some((r) => r.mode === "input");
+    if (allSet && !allGreen && !hasInputRow && newRows.length < MAX_ROWS) {
+      newRows.push(createEmptyRow());
+    }
+
     onRowsChange(newRows);
   };
 
@@ -83,12 +97,35 @@ export default function GuessGrid({ rows, onRowsChange }: GuessGridProps) {
     onRowsChange(newRows);
   };
 
+  // For each color-mode row, determine which tiles allow gray.
+  // A letter allows gray unless it was ONLY yellow (never green) in previous rows.
+  const computeAllowGray = (rowIndex: number, row: RowState): boolean[] => {
+    if (row.mode !== "color") return [true, true, true, true, true];
+    const prevColorRows = rows.filter((r, i) => i < rowIndex && r.mode === "color");
+    return row.letters.map((letter) => {
+      const l = letter.toLowerCase();
+      let seenYellow = false;
+      let seenGreen = false;
+      for (const prev of prevColorRows) {
+        for (let p = 0; p < 5; p++) {
+          if (prev.letters[p]?.toLowerCase() !== l) continue;
+          if (prev.colors[p] === "green") seenGreen = true;
+          if (prev.colors[p] === "yellow") seenYellow = true;
+        }
+      }
+      // Only restrict if letter was yellow but never green
+      if (seenYellow && !seenGreen) return false;
+      return true;
+    });
+  };
+
   return (
     <div className="guess-grid">
       {rows.map((row, i) => (
         <GuessRow
           key={i}
           row={row}
+          allowGray={computeAllowGray(i, row)}
           autoFocus={row.mode === "input"}
           onLettersComplete={(letters) => handleLettersComplete(i, letters)}
           onColorChange={(tileIdx, color) =>

@@ -15,4 +15,3 @@ export interface Constraints {
   gray: Set<string>;
 }
 
-export type RankingMode = "frequency" | "entropy";

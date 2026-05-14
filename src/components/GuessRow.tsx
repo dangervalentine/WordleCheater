@@ -1,20 +1,21 @@
-import { useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { RowState, TileColor } from "../types";
 import { theme } from "../theme";
 
 interface GuessRowProps {
   row: RowState;
+  allowGray: boolean[];
   autoFocus: boolean;
   onLettersComplete: (letters: string[]) => void;
   onColorChange: (index: number, color: TileColor) => void;
   onDelete: () => void;
 }
 
-const COLOR_CYCLE: TileColor[] = ["unset", "gray", "yellow", "green"];
-
-function nextColor(current: TileColor): TileColor {
-  const idx = COLOR_CYCLE.indexOf(current);
-  return COLOR_CYCLE[(idx + 1) % COLOR_CYCLE.length];
+function nextColor(current: TileColor, allowGray: boolean): TileColor {
+  if (current === "unset") return "green";
+  if (current === "green") return "yellow";
+  if (current === "yellow") return allowGray ? "gray" : "green";
+  return "green"; // gray wraps to green, skipping unset
 }
 
 function tileStyle(color: TileColor): React.CSSProperties {
@@ -34,13 +35,14 @@ function tileStyle(color: TileColor): React.CSSProperties {
       return {
         backgroundColor: theme.tile.gray,
         color: theme.text.primary,
-        border: `2px dashed ${theme.tile.unsetBorder}`,
+        border: `2px solid ${theme.text.primary}`,
       };
   }
 }
 
 export default function GuessRow({
   row,
+  allowGray,
   autoFocus,
   onLettersComplete,
   onColorChange,
@@ -56,43 +58,49 @@ export default function GuessRow({
     }
   }, [row.mode, autoFocus]);
 
+  // Local letter state so partial input doesn't propagate to App and trigger result recalcs
+  const [localLetters, setLocalLetters] = useState(row.letters);
+
+  // Sync local state if parent resets the row (e.g. app reset)
+  useEffect(() => {
+    setLocalLetters(row.letters);
+  }, [row.letters]);
+
   if (row.mode === "input") {
     const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
       const key = e.key;
 
       if (key === "Backspace") {
         e.preventDefault();
-        const newLetters = [...row.letters];
+        const newLetters = [...localLetters];
         if (newLetters[index] !== "") {
           newLetters[index] = "";
         } else if (index > 0) {
           newLetters[index - 1] = "";
           inputRefs.current[index - 1]?.focus();
         }
-        onLettersComplete(newLetters);
+        setLocalLetters(newLetters);
         return;
       }
 
       if (/^[a-zA-Z]$/.test(key)) {
         e.preventDefault();
-        const newLetters = [...row.letters];
+        const newLetters = [...localLetters];
         newLetters[index] = key.toLowerCase();
+        setLocalLetters(newLetters);
 
         const allFilled = newLetters.every((l) => l !== "");
         if (allFilled) {
           onLettersComplete(newLetters);
-        } else {
-          onLettersComplete(newLetters);
-          if (index < 4) {
-            inputRefs.current[index + 1]?.focus();
-          }
+        } else if (index < 4) {
+          inputRefs.current[index + 1]?.focus();
         }
       }
     };
 
     return (
       <div className="guess-row">
-        {row.letters.map((letter, i) => {
+        {localLetters.map((letter, i) => {
           const isFilled = letter !== "";
           const borderColor = isFilled ? theme.input.filled : theme.input.empty;
           return (
@@ -123,9 +131,9 @@ export default function GuessRow({
       {row.letters.map((letter, i) => (
         <button
           key={i}
-          className="tile-button"
+          className={`tile-button${row.colors[i] === "unset" ? " unset-color" : ""}`}
           style={tileStyle(row.colors[i])}
-          onClick={() => onColorChange(i, nextColor(row.colors[i]))}
+          onClick={() => onColorChange(i, nextColor(row.colors[i], allowGray[i]))}
         >
           {letter}
         </button>
