@@ -21,7 +21,11 @@ export default function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1 className="app-title">WORDLE HELPER</h1>
+        <h1 className="app-title">
+          <span className="title-word">WORDLE</span>{" "}
+          <span className="title-accent">HELPER</span>
+        </h1>
+        <p className="app-subtitle">Type guesses, set colors, find answers</p>
       </header>
 
       <main className="app-main">

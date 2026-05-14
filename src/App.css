@@ -3,21 +3,35 @@
 .app {
   max-width: 960px;
   margin: 0 auto;
-  padding: var(--spacing-xxxl) var(--spacing-xl);
+  padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-xxxl);
 }
 
 .app-header {
   text-align: center;
-  margin-bottom: var(--spacing-4xl);
+  margin-bottom: var(--spacing-xxl);
 }
 
 .app-title {
-  color: var(--color-primary-main);
   font-family: var(--font-family-title);
-  font-size: var(--font-size-xlarge);
+  font-size: var(--font-size-display);
   font-weight: var(--font-weight-bold);
-  letter-spacing: 6px;
-  margin-bottom: var(--spacing-sm);
+  letter-spacing: 8px;
+  margin-bottom: var(--spacing-md);
+}
+
+.title-word {
+  color: var(--color-text-primary);
+}
+
+.title-accent {
+  color: var(--color-accent-cyan);
+}
+
+.app-subtitle {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 2px;
 }
 
 .app-author {
@@ -33,7 +47,7 @@
 .app-main {
   display: flex;
   align-items: stretch;
-  gap: var(--spacing-xxxl);
+  gap: var(--spacing-xxl);
 }
 
 .left-column {
@@ -45,8 +59,8 @@
   background: var(--color-bg-surface);
   border: var(--border-thin) solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-xxxl) var(--spacing-xxl);
-  box-shadow: var(--shadow-medium);
+  padding: var(--spacing-xxl) var(--spacing-xl);
+  box-shadow: var(--shadow-large);
 }
 
 .right-column {
@@ -54,8 +68,8 @@
   background: var(--color-bg-surface);
   border: var(--border-thin) solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-xxxl) var(--spacing-xxl);
-  box-shadow: var(--shadow-medium);
+  padding: var(--spacing-xxl) var(--spacing-xl);
+  box-shadow: var(--shadow-large);
 }
 
 /* ===== Guess Grid ===== */
@@ -85,6 +99,7 @@
   text-transform: uppercase;
   outline: none;
   caret-color: var(--color-primary-main);
+  box-shadow: var(--shadow-medium);
 }
 
 .tile-input:focus {
@@ -101,6 +116,7 @@
   font-weight: var(--font-weight-bold);
   text-transform: uppercase;
   transition: transform var(--transition-fast);
+  box-shadow: var(--shadow-medium);
 }
 
 .tile-button:hover {
@@ -124,6 +140,13 @@
   font-size: var(--font-size-small);
   margin-left: var(--spacing-md);
   transition: background var(--transition-fast);
+}
+
+.row-spacer {
+  width: 28px;
+  height: 28px;
+  margin-left: var(--spacing-md);
+  visibility: hidden;
 }
 
 .delete-button:hover {
@@ -353,7 +376,7 @@
   }
 
   .app-title {
-    font-size: var(--font-size-large);
+    font-size: var(--font-size-xxlarge);
     letter-spacing: 4px;
   }
 

@@ -112,6 +112,7 @@ export default function GuessRow({
             />
           );
         })}
+        <div className="row-spacer" />
       </div>
     );
   }

@@ -6,6 +6,83 @@
   padding: 0;
 }
 
+/* ================================================================
+   DARK MODE (default)
+   ================================================================ */
+
+:root,
+:root[data-theme="dark"] {
+  /* --- Primary --- */
+  --color-primary-light: #AFC6FF;
+  --color-primary-main: #82AAFF;
+  --color-primary-dark: #4976A1;
+
+  /* --- Secondary --- */
+  --color-secondary-light: #A3B7C7;
+  --color-secondary-main: #8DA0AF;
+  --color-secondary-dark: #2A3F51;
+
+  /* --- Accents --- */
+  --color-accent-cyan: #7fdbca;
+  --color-accent-coral: #FFAB70;
+  --color-accent-green: #C3E88D;
+  --color-accent-pink: #F07178;
+  --color-accent-yellow: #FFCB6B;
+  --color-accent-purple: #C792EA;
+
+  /* --- Semantic --- */
+  --color-semantic-success: #C3E88D;
+  --color-semantic-warning: #FFCB6B;
+  --color-semantic-error: #F07178;
+  --color-semantic-info: #82AAFF;
+
+  /* --- Neutral --- */
+  --color-neutral-white: #FFFFFF;
+  --color-neutral-light-gray: #D6DEEB;
+  --color-neutral-gray: #637777;
+  --color-neutral-dark-gray: #1D3B53;
+  --color-neutral-black: #000000;
+
+  /* --- Background (darkest → lightest) --- */
+  --color-bg-floor: #010E18;
+  --color-bg-base: #011627;
+  --color-bg-surface: #0A1E30;
+  --color-bg-elevated: #132A3E;
+  --color-bg-medium: #1D3B53;
+  --color-bg-card: #011627;
+  --color-bg-scrim: rgba(1, 22, 39, 0.6);
+
+  /* --- Text --- */
+  --color-text-primary: #D6DEEB;
+  --color-text-secondary: #9DB2C0;
+  --color-text-muted: #7E8E94;
+  --color-text-inverse: #011627;
+
+  /* --- Border --- */
+  --color-border: #2A3F51;
+  --color-border-transparent: rgba(42, 63, 81, 0.53);
+  --color-border-card: #2A3F51;
+
+  /* --- RGB variants for rgba() usage --- */
+  --color-primary-main-rgb: 130, 170, 255;
+  --color-accent-cyan-rgb: 127, 219, 202;
+  --color-accent-coral-rgb: 255, 171, 112;
+  --color-accent-green-rgb: 195, 232, 141;
+  --color-accent-pink-rgb: 240, 113, 120;
+  --color-accent-yellow-rgb: 255, 203, 107;
+  --color-accent-purple-rgb: 199, 146, 234;
+  --color-border-rgb: 42, 63, 81;
+  --color-neutral-white-rgb: 255, 255, 255;
+  --color-neutral-black-rgb: 0, 0, 0;
+  --color-bg-base-rgb: 1, 22, 39;
+  --color-text-primary-rgb: 214, 222, 235;
+}
+
+
+/* ================================================================
+   THEME-AGNOSTIC TOKENS
+   ================================================================ */
+
 :root {
   /* --- Typography --- */
   --font-family-title: "Outfit", sans-serif;
@@ -18,14 +95,23 @@
   --font-weight-bold: 700;
 
   --font-size-tiny: 0.6875rem;    /* 11px */
+  --font-size-kbd: var(--font-size-tiny);
   --font-size-small: 0.8125rem;   /* 13px */
   --font-size-body: 0.9375rem;    /* 15px */
   --font-size-medium: 1.0625rem;  /* 17px */
   --font-size-large: 1.25rem;     /* 20px */
   --font-size-xlarge: 1.5rem;     /* 24px */
   --font-size-xxlarge: 2rem;      /* 32px */
+  --font-size-display: 2.5rem;    /* 40px */
 
-  /* --- Spacing --- */
+  --line-height-tiny: 1.2;
+  --line-height-small: 1.2;
+  --line-height-body: 1.45;
+  --line-height-medium: 1.35;
+  --line-height-large: 1.25;
+  --line-height-xlarge: 1.2;
+
+  /* --- Spacing (7-point scale) --- */
   --spacing-xs: 2px;
   --spacing-sm: 4px;
   --spacing-md: 8px;
@@ -35,6 +121,7 @@
   --spacing-xxxl: 24px;
   --spacing-4xl: 32px;
   --spacing-5xl: 48px;
+  --spacing-6xl: 64px;
 
   /* --- Border radii --- */
   --radius-sm: 4px;
@@ -47,44 +134,33 @@
   --border-hairline: 0.5px;
   --border-thin: 1px;
   --border-medium: 2px;
+  --border-heavy: 3px;
 
   /* --- Shadows --- */
   --shadow-small: 0 1px 2px rgba(0, 0, 0, 0.22);
   --shadow-medium: 0 2px 4px rgba(0, 0, 0, 0.25);
   --shadow-large: 0 4px 12px rgba(0, 0, 0, 0.3);
   --shadow-floating: 0 -2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-sheet: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  /* --- Z-index --- */
+  --z-base: 1;
+  --z-elevated: 2;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal: 1000;
+  --z-overlay: 1100;
+  --z-toast: 1200;
 
   /* --- Transitions --- */
   --transition-fast: 150ms ease;
   --transition-normal: 250ms ease;
+  --transition-slow: 350ms ease;
+  --transition-theme: 300ms ease;
 
-  /* --- Colors --- */
-  --color-primary-main: #82AAFF;
-  --color-accent-cyan: #7fdbca;
-  --color-accent-pink: #F07178;
-  --color-accent-green: #C3E88D;
-  --color-accent-yellow: #FFCB6B;
-
-  --color-bg-base: #011627;
-  --color-bg-surface: #0A1E30;
-  --color-bg-elevated: #132A3E;
-  --color-bg-scrim: rgba(1, 22, 39, 0.6);
-
-  --color-text-primary: #D6DEEB;
-  --color-text-muted: #7E8E94;
-  --color-text-secondary: #9DB2C0;
-
-  --color-neutral-gray: #637777;
-  --color-neutral-dark-gray: #1D3B53;
-
-  --color-border: #2A3F51;
-  --color-border-transparent: rgba(42, 63, 81, 0.53);
-
-  --color-primary-main-rgb: 130, 170, 255;
-  --color-accent-cyan-rgb: 127, 219, 202;
-  --color-accent-pink-rgb: 240, 113, 120;
-  --color-accent-green-rgb: 195, 232, 141;
-  --color-accent-yellow-rgb: 255, 203, 107;
+  /* --- Layout --- */
+  --max-width-content: 1200px;
+  --max-width-narrow: 800px;
 }
 
 body {
