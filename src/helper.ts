@@ -14,7 +14,7 @@ export function findResults(constraints: Constraints): string[] {
   // Letters that are green should not be excluded by gray
   const greenLetters = new Set(green.filter((g): g is string => g !== null));
 
-  return (dict as string[]).filter((word) => {
+  const matches = (dict as string[]).filter((word) => {
     // Check green: letter must match at each green position
     for (let i = 0; i < 5; i++) {
       if (green[i] !== null && word[i] !== green[i]) {
@@ -55,4 +55,41 @@ export function findResults(constraints: Constraints): string[] {
 
     return true;
   });
+
+  return rankByLikelihood(matches);
+}
+
+function rankByLikelihood(words: string[]): string[] {
+  if (words.length <= 1) return words;
+
+  // Build positional letter frequencies from the candidate set
+  const posFreq: Map<string, number>[] = Array.from({ length: 5 }, () => new Map());
+  for (const word of words) {
+    for (let i = 0; i < 5; i++) {
+      const key = word[i];
+      posFreq[i].set(key, (posFreq[i].get(key) ?? 0) + 1);
+    }
+  }
+
+  // Normalize frequencies to [0, 1] by dividing by candidate count
+  const total = words.length;
+
+  // Score each word
+  const scores = new Map<string, number>();
+  for (const word of words) {
+    let score = 0;
+
+    // Positional frequency: how common is each letter at its position?
+    for (let i = 0; i < 5; i++) {
+      score += (posFreq[i].get(word[i]) ?? 0) / total;
+    }
+
+    // Unique letter bonus: reward distinct letters (max +1 for all unique)
+    const unique = new Set(word).size;
+    score += unique / 5;
+
+    scores.set(word, score);
+  }
+
+  return words.sort((a, b) => scores.get(b)! - scores.get(a)!);
 }

@@ -17,6 +17,16 @@
   font-weight: var(--font-weight-bold);
   letter-spacing: 8px;
   margin-bottom: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-lg);
+}
+
+.title-icon {
+  width: 1.1em;
+  height: 1.1em;
+  flex-shrink: 0;
 }
 
 .title-word {
@@ -24,7 +34,7 @@
 }
 
 .title-accent {
-  color: var(--color-accent-cyan);
+  color: var(--color-accent-pink);
 }
 
 .app-subtitle {

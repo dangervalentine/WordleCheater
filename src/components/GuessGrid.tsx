@@ -25,8 +25,23 @@ export default function GuessGrid({ rows, onRowsChange }: GuessGridProps) {
     const allFilled = letters.every((l) => l !== "");
 
     if (allFilled && rows[rowIndex].mode === "input") {
-      // Transition to color mode
-      newRows[rowIndex] = { ...newRows[rowIndex], mode: "color" };
+      // Inherit colors from previous guesses for matching letter+position
+      const inheritedColors: TileColor[] = ["unset", "unset", "unset", "unset", "unset"];
+      const previousColorRows = newRows.filter((r, i) => i < rowIndex && r.mode === "color");
+      for (let pos = 0; pos < 5; pos++) {
+        const letter = letters[pos]?.toLowerCase();
+        if (!letter) continue;
+        for (let ri = previousColorRows.length - 1; ri >= 0; ri--) {
+          const prev = previousColorRows[ri];
+          if (prev.letters[pos]?.toLowerCase() === letter && prev.colors[pos] !== "unset") {
+            inheritedColors[pos] = prev.colors[pos];
+            break;
+          }
+        }
+      }
+
+      // Transition to color mode with inherited colors
+      newRows[rowIndex] = { ...newRows[rowIndex], mode: "color", colors: inheritedColors };
 
       // Add new input row if under max
       if (newRows.length < MAX_ROWS) {
