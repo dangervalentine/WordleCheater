@@ -76,7 +76,6 @@ describe("computeEntropy", () => {
     const candidates = ["aback", "abash", "abate", "abbey", "abbot"];
     const eBad = computeEntropy("aback", candidates);
     const eGood = computeEntropy("light", candidates);
-    expect(eBad).toBeGreaterThanOrEqual(0);
-    expect(eGood).toBeGreaterThanOrEqual(0);
+    expect(eGood).toBeGreaterThan(eBad);
   });
 });

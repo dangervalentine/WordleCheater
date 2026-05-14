@@ -34,6 +34,7 @@ export function computePattern(guess: string, answer: string): number {
  * Higher entropy = the guess splits candidates into more even groups = more information gained.
  */
 export function computeEntropy(guess: string, candidates: string[]): number {
+  if (candidates.length === 0) return 0;
   const buckets = new Map<number, number>();
   for (const answer of candidates) {
     const pattern = computePattern(guess, answer);
