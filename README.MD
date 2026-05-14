@@ -5,7 +5,7 @@
 <h1 align="center">Wordle Helper</h1>
 
 <p align="center">
-  <strong>A constraint-based solver that narrows down Wordle answers in real time as you enter guesses and color feedback.</strong>
+  <strong>An entropy-ranked solver that narrows down Wordle answers in real time and tells you which guesses eliminate the most possibilities.</strong>
 </p>
 
 <p align="center">
@@ -28,41 +28,43 @@
 
 ---
 
-Type a five-letter word, then click each tile to cycle through gray, yellow, and green to match your Wordle feedback. The solver immediately filters a built-in dictionary down to only the words that satisfy every constraint, updating live as you add more guesses.
+Type a five-letter word, then click each tile to cycle through green, yellow, and gray to match your Wordle feedback. The solver immediately filters a built-in dictionary down to only the words that fit, and after your first guess it starts ranking them by how much information each one would give you.
 
 ## Features
 
 **Multi-row guesses** &mdash; Add up to six guess rows, just like the real game. Each row locks into color-picking mode once all five letters are entered.
 
-**Tile color cycling** &mdash; Click a filled tile to cycle through gray (absent), yellow (wrong position), and green (correct position). Colors are applied instantly and constraints recalculate on every change.
+**Tile color cycling** &mdash; Click a filled tile to cycle through green (correct position), yellow (wrong position), and gray (absent). Colors are applied instantly and constraints recalculate on every change.
+
+**Smart color inheritance** &mdash; When you type a new guess, tiles automatically inherit colors from previous rows when a letter appears in the same position, saving you clicks.
+
+**Entropy-ranked suggestions** &mdash; After your first guess, remaining words are ranked by how useful they'd be as your next guess. The best words to try float to the top. See [How the ranking works](#how-the-ranking-works) below.
 
 **Live constraint summary** &mdash; A panel below the grid shows confirmed (green) positions, present-but-misplaced (yellow) letters, and excluded (gray) letters at a glance.
 
-**Filtered results** &mdash; The right panel displays all remaining valid words as chips, with a count header. When narrowed to a single word, it highlights with a glow. Large result sets are paginated with a "show more" toggle.
+**Victory detection** &mdash; When you mark all five tiles green, the app celebrates your win and shows how many guesses it took.
 
 **Reset** &mdash; One click clears all rows and starts fresh.
 
 ## How It Works
 
-```
-Guess rows (letters + colors per tile)
-        |
-        v
-  deriveConstraints()
-  ├── green[i]  = confirmed letter at position i
-  ├── yellow    = letters present but not at marked positions
-  ├── gray      = letters excluded entirely
-  |               (unless also green elsewhere)
-        |
-        v
-  findResults(constraints)
-  ├── Filter dictionary against all green positions
-  ├── Exclude gray letters (respecting green overrides)
-  └── Require yellow letters exist, but not at excluded positions
-        |
-        v
-  Matching words displayed as chips
-```
+The solver has two layers: **filtering** and **ranking**.
+
+**Filtering** happens every time you change a tile color. It looks at all your guesses and throws out any word from the dictionary that doesn't fit the clues. Green letters must be in exactly that spot. Yellow letters must be in the word but *not* in the spot you marked. Gray letters can't appear at all (unless they're also green somewhere else, like a double-letter situation).
+
+**Ranking** kicks in after your first guess, once all tile colors are set. Instead of showing the remaining words in a random order, it scores each one and puts the most useful guesses at the top. This is where the entropy algorithm comes in.
+
+## How the Ranking Works
+
+Imagine you have 100 words left and you're trying to pick your next guess. Some guesses are better than others &mdash; not because they're more likely to be the answer, but because they'll narrow things down the most no matter what the answer turns out to be.
+
+Here's the idea: for any word you might guess, the app simulates what would happen if you guessed it against every remaining possibility. Each possible answer would give you a different pattern of greens, yellows, and grays. Some guesses would produce lots of different patterns (meaning you'd learn a lot), while others would produce mostly the same pattern over and over (meaning you wouldn't learn much).
+
+The best guess is one that splits the remaining words into as many small, evenly-sized groups as possible. If your guess would divide 100 words into 50 groups of 2, that's great &mdash; no matter what colors you get back, you've cut your options way down. If it divides them into 1 group of 95 and a few stragglers, that's a bad guess &mdash; you'll probably learn almost nothing.
+
+The app turns this into a single score for each word. Higher score = more useful guess. The scoring math is borrowed from information theory, but the intuition is simple: **pick the guess that leaves you with the fewest remaining possibilities on average, regardless of what the answer is.**
+
+Because this involves checking every candidate against every other candidate, it can be computationally heavy. The app runs this in a background thread so the UI stays responsive, and results stream in as they're calculated &mdash; you'll see words shuffling into their ranked positions in real time.
 
 ## Quick Start
 
@@ -72,52 +74,6 @@ npm run dev        # dev server at http://localhost:5173/WordleCheater/
 npm run build      # type-check + production bundle in ./dist
 npm test           # run unit tests
 ```
-
-Vite's `base` is set to `/WordleCheater/` in [`vite.config.ts`](./vite.config.ts) so assets resolve correctly on GitHub Pages.
-
-## Tech Stack
-
-- **React 19** &mdash; UI with hooks and memoized constraint derivation
-- **Vite 6** &mdash; dev server, build, GitHub Pages base path
-- **TypeScript 6** &mdash; strict types for tile state, constraints, and row modes
-- **Vitest 4** &mdash; unit tests for constraint derivation and dictionary filtering
-
-## Project Structure
-
-```
-src/
-├── main.tsx                    React 19 createRoot entry
-├── App.tsx                     Main app — guess grid, constraints, results layout
-├── index.css                   Global styles + design tokens
-├── App.css                     Component styles (token-driven)
-├── theme.ts                    Night Owl color constants
-├── types.ts                    TileColor, RowState, Constraints types
-├── constraints.ts              Derive green/yellow/gray from row state
-├── helper.ts                   Filter dictionary against constraints
-├── dictionary.json             Built-in word list
-│
-├── components/
-│   ├── GuessGrid.tsx           Grid container + row management
-│   ├── GuessRow.tsx            Single row — input mode and color mode
-│   ├── ConstraintSummary.tsx   Visual constraint breakdown panel
-│   ├── Results.tsx             Filtered word chips with pagination
-│   └── GithubAttribution.tsx   Bottom-right author + source link
-│
-└── __tests__/
-    ├── constraints.test.ts     Constraint derivation tests
-    └── helper.test.ts          Dictionary filtering tests
-```
-
-## Deployment
-
-CI is wired up via GitHub Actions:
-
-- [`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml) &mdash; builds and publishes to GitHub Pages on every push to `wordle-fork`.
-
-The deploy workflow uses the modern `actions/deploy-pages` flow. One-time setup on the repo:
-
-1. **Settings &rarr; Pages &rarr; Build and deployment &rarr; Source:** select **GitHub Actions**.
-2. Push to `wordle-fork` (or run the workflow manually from the Actions tab).
 
 ## License
 
