@@ -18,7 +18,15 @@
   <rect x="24" y="43" width="16" height="16" rx="2.5" fill="#C3E88D" stroke="#000" stroke-width="1.2"/>
   <rect x="43" y="43" width="16" height="16" rx="2.5" fill="#C3E88D" stroke="#000" stroke-width="1.2"/>
 
-  <!-- Checkmark overlay — "solved" indicator -->
+  <!-- Checkmark overlay — "solved" indicator (dark outline for contrast) -->
+  <polyline
+    points="16,34 27,46 50,18"
+    fill="none"
+    stroke="#011627"
+    stroke-width="12"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
   <polyline
     points="16,34 27,46 50,18"
     fill="none"

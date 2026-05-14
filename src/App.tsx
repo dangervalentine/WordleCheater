@@ -106,6 +106,7 @@ export default function App() {
             <rect x="5" y="43" width="16" height="16" rx="2.5" fill="#C3E88D" stroke="#000" strokeWidth="1.2"/>
             <rect x="24" y="43" width="16" height="16" rx="2.5" fill="#C3E88D" stroke="#000" strokeWidth="1.2"/>
             <rect x="43" y="43" width="16" height="16" rx="2.5" fill="#C3E88D" stroke="#000" strokeWidth="1.2"/>
+            <polyline points="16,34 27,46 50,18" stroke="#011627" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round"/>
             <polyline points="16,34 27,46 50,18" stroke="var(--color-accent-pink)" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
           <span className="title-word">WORDLE</span>{" "}
