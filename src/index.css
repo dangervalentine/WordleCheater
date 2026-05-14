@@ -1,7 +1,24 @@
-body {
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
-  font-family: "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
-    "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  background: #121314;
-  color: #fff;
+  padding: 0;
+}
+
+body {
+  font-family: "Roboto", "Segoe UI", -apple-system, BlinkMacSystemFont,
+    sans-serif;
+  background: #011627;
+  color: #d6deeb;
+  min-height: 100vh;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+input {
+  font-family: inherit;
 }

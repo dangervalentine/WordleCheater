@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv src/App.js src/App.jsx)",
+      "Bash(mv src/LetterButton.js src/LetterButton.jsx)",
+      "Bash(mv src/KnownLetter.js src/KnownLetter.jsx)",
+      "Bash(mv src/UnknownLetter.js src/UnknownLetter.jsx)",
+      "Bash(mv src/Results.js src/Results.jsx)"
+    ]
+  }
+}

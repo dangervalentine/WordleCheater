@@ -1,38 +1,27 @@
 {
-  "name": "javascript-words-with-javascript",
-  "version": "0.1.0",
+  "name": "wordle-cheater",
   "private": true,
-  "dependencies": {
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
-    "react-scripts": "^5.0.0"
-  },
+  "version": "0.1.0",
+  "type": "module",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist",
+    "test": "vitest run"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "homepage": " http://victoriousj.github.io/WordleCheater",
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "gh-pages": "^2.2.0",
-    "github-pages": "^3.0.2"
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^4.5.2",
+    "gh-pages": "^6.3.0",
+    "typescript": "^6.0.3",
+    "vite": "^6.3.5",
+    "vitest": "^4.1.6"
   }
 }
