@@ -11,7 +11,13 @@ export default function Results({ results }: ResultsProps) {
   const [showAll, setShowAll] = useState(false);
 
   if (results.length === 0) {
-    return null;
+    return (
+      <div className="results-panel">
+        <div className="results-empty">
+          Enter a guess to see possible words
+        </div>
+      </div>
+    );
   }
 
   const displayedResults = showAll

@@ -6,11 +6,91 @@
   padding: 0;
 }
 
+:root {
+  /* --- Typography --- */
+  --font-family-title: "Outfit", sans-serif;
+  --font-family-body: "Outfit", sans-serif;
+  --font-family-mono: "FiraCode", monospace;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --font-size-tiny: 0.6875rem;    /* 11px */
+  --font-size-small: 0.8125rem;   /* 13px */
+  --font-size-body: 0.9375rem;    /* 15px */
+  --font-size-medium: 1.0625rem;  /* 17px */
+  --font-size-large: 1.25rem;     /* 20px */
+  --font-size-xlarge: 1.5rem;     /* 24px */
+  --font-size-xxlarge: 2rem;      /* 32px */
+
+  /* --- Spacing --- */
+  --spacing-xs: 2px;
+  --spacing-sm: 4px;
+  --spacing-md: 8px;
+  --spacing-lg: 12px;
+  --spacing-xl: 16px;
+  --spacing-xxl: 20px;
+  --spacing-xxxl: 24px;
+  --spacing-4xl: 32px;
+  --spacing-5xl: 48px;
+
+  /* --- Border radii --- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 100px;
+
+  /* --- Border widths --- */
+  --border-hairline: 0.5px;
+  --border-thin: 1px;
+  --border-medium: 2px;
+
+  /* --- Shadows --- */
+  --shadow-small: 0 1px 2px rgba(0, 0, 0, 0.22);
+  --shadow-medium: 0 2px 4px rgba(0, 0, 0, 0.25);
+  --shadow-large: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-floating: 0 -2px 8px rgba(0, 0, 0, 0.25);
+
+  /* --- Transitions --- */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+
+  /* --- Colors --- */
+  --color-primary-main: #82AAFF;
+  --color-accent-cyan: #7fdbca;
+  --color-accent-pink: #F07178;
+  --color-accent-green: #C3E88D;
+  --color-accent-yellow: #FFCB6B;
+
+  --color-bg-base: #011627;
+  --color-bg-surface: #0A1E30;
+  --color-bg-elevated: #132A3E;
+  --color-bg-scrim: rgba(1, 22, 39, 0.6);
+
+  --color-text-primary: #D6DEEB;
+  --color-text-muted: #7E8E94;
+  --color-text-secondary: #9DB2C0;
+
+  --color-neutral-gray: #637777;
+  --color-neutral-dark-gray: #1D3B53;
+
+  --color-border: #2A3F51;
+  --color-border-transparent: rgba(42, 63, 81, 0.53);
+
+  --color-primary-main-rgb: 130, 170, 255;
+  --color-accent-cyan-rgb: 127, 219, 202;
+  --color-accent-pink-rgb: 240, 113, 120;
+  --color-accent-green-rgb: 195, 232, 141;
+  --color-accent-yellow-rgb: 255, 203, 107;
+}
+
 body {
-  font-family: "Roboto", "Segoe UI", -apple-system, BlinkMacSystemFont,
-    sans-serif;
-  background: #011627;
-  color: #d6deeb;
+  font-family: var(--font-family-body), "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--color-bg-base);
+  color: var(--color-text-primary);
   min-height: 100vh;
 }
 
