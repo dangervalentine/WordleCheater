@@ -57,36 +57,63 @@ export default function GuessRow({
   }, [row.mode, autoFocus]);
 
   if (row.mode === "input") {
-    const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-      const key = e.key;
+    const writeLetters = (letters: string[]) => onLettersComplete(letters);
 
-      if (key === "Backspace") {
-        e.preventDefault();
+    const deletePrevious = (index: number) => {
+      if (index <= 0) return;
+      const newLetters = [...row.letters];
+      newLetters[index - 1] = "";
+      writeLetters(newLetters);
+      inputRefs.current[index - 1]?.focus();
+    };
+
+    const handleChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+      const raw = e.target.value;
+
+      // Native deletion (selecting + delete, or backspace when cell has a letter)
+      if (raw === "") {
         const newLetters = [...row.letters];
-        if (newLetters[index] !== "") {
-          newLetters[index] = "";
-        } else if (index > 0) {
-          newLetters[index - 1] = "";
-          inputRefs.current[index - 1]?.focus();
-        }
-        onLettersComplete(newLetters);
+        newLetters[index] = "";
+        writeLetters(newLetters);
         return;
       }
 
-      if (/^[a-zA-Z]$/.test(key)) {
-        e.preventDefault();
-        const newLetters = [...row.letters];
-        newLetters[index] = key.toLowerCase();
+      // Pull out only letter characters; take the most recently typed one. This
+      // handles select-on-focus replacements, autosuggest insertions, and the
+      // case where maxLength briefly allows two chars before truncation.
+      const letters = raw.match(/[a-zA-Z]/g);
+      if (!letters) return;
+      const newChar = letters[letters.length - 1].toLowerCase();
 
-        const allFilled = newLetters.every((l) => l !== "");
-        if (allFilled) {
-          onLettersComplete(newLetters);
-        } else {
-          onLettersComplete(newLetters);
-          if (index < 4) {
-            inputRefs.current[index + 1]?.focus();
-          }
-        }
+      const newLetters = [...row.letters];
+      newLetters[index] = newChar;
+      writeLetters(newLetters);
+
+      const allFilled = newLetters.every((l) => l !== "");
+      if (!allFilled && index < 4) {
+        inputRefs.current[index + 1]?.focus();
+      }
+    };
+
+    // Desktop fallback: when the cell is already empty, Backspace would do
+    // nothing native, so we manually move focus and clear the previous cell.
+    const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Backspace" && row.letters[index] === "") {
+        e.preventDefault();
+        deletePrevious(index);
+      }
+    };
+
+    // Mobile fallback: Android soft keyboards often fire keydown with
+    // key="Unidentified" but always set the correct inputType here.
+    const handleBeforeInput = (
+      index: number,
+      e: React.FormEvent<HTMLInputElement>
+    ) => {
+      const inputType = (e.nativeEvent as InputEvent).inputType;
+      if (inputType === "deleteContentBackward" && row.letters[index] === "") {
+        e.preventDefault();
+        deletePrevious(index);
       }
     };
 
@@ -101,13 +128,18 @@ export default function GuessRow({
               ref={(el) => { inputRefs.current[i] = el; }}
               className="tile-input"
               type="text"
+              inputMode="text"
+              enterKeyHint="next"
               maxLength={1}
               value={letter}
-              readOnly
+              onChange={(e) => handleChange(i, e)}
               onKeyDown={(e) => handleKeyDown(i, e)}
+              onBeforeInput={(e) => handleBeforeInput(i, e)}
+              onFocus={(e) => e.currentTarget.select()}
               autoCapitalize="none"
               autoComplete="off"
               autoCorrect="off"
+              spellCheck={false}
               style={{ borderColor }}
             />
           );
