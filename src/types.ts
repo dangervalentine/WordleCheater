@@ -14,3 +14,5 @@ export interface Constraints {
   yellowPositions: Map<string, Set<number>>;
   gray: Set<string>;
 }
+
+export type RankingMode = "frequency" | "entropy";
