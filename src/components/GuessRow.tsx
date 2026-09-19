@@ -67,6 +67,19 @@ export default function GuessRow({
     }, [row.letters]);
 
     if (row.mode === "input") {
+        const applyLetter = (index: number, char: string) => {
+            const newLetters = [...localLetters];
+            newLetters[index] = char.toLowerCase();
+            setLocalLetters(newLetters);
+
+            const allFilled = newLetters.every((l) => l !== "");
+            if (allFilled) {
+                onLettersComplete(newLetters);
+            } else if (index < 4) {
+                inputRefs.current[index + 1]?.focus();
+            }
+        };
+
         const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
             const key = e.key;
 
@@ -85,16 +98,26 @@ export default function GuessRow({
 
             if (/^[a-zA-Z]$/.test(key)) {
                 e.preventDefault();
-                const newLetters = [...localLetters];
-                newLetters[index] = key.toLowerCase();
-                setLocalLetters(newLetters);
+                applyLetter(index, key);
+            }
+        };
 
-                const allFilled = newLetters.every((l) => l !== "");
-                if (allFilled) {
-                    onLettersComplete(newLetters);
-                } else if (index < 4) {
-                    inputRefs.current[index + 1]?.focus();
+        const handleInput = (index: number, e: React.FormEvent<HTMLInputElement>) => {
+            const nativeEvent = e.nativeEvent as InputEvent;
+            if (nativeEvent.inputType === "deleteContentBackward") {
+                const newLetters = [...localLetters];
+                if (newLetters[index] !== "") {
+                    newLetters[index] = "";
+                } else if (index > 0) {
+                    newLetters[index - 1] = "";
+                    inputRefs.current[index - 1]?.focus();
                 }
+                setLocalLetters(newLetters);
+                return;
+            }
+            const char = nativeEvent.data;
+            if (char && /^[a-zA-Z]$/.test(char)) {
+                applyLetter(index, char);
             }
         };
 
@@ -109,13 +132,16 @@ export default function GuessRow({
                             ref={(el) => { inputRefs.current[i] = el; }}
                             className="tile-input"
                             type="text"
+                            inputMode="text"
                             maxLength={1}
                             value={letter}
-                            readOnly
+                            onChange={() => {}}
                             onKeyDown={(e) => handleKeyDown(i, e)}
+                            onInput={(e) => handleInput(i, e)}
                             autoCapitalize="none"
                             autoComplete="off"
                             autoCorrect="off"
+                            spellCheck={false}
                             style={{ borderColor }}
                         />
                     );
