@@ -14,7 +14,7 @@
 
 <p align="center">
   <a href="https://dangervalentine.github.io/WordleCheater/">
-    <img src="./wordle-helper.png" width="640" alt="Wordle Helper screenshot" />
+    <img src="./wordle-helper.png" width="640" alt="Wordle Helper key art: a solved Wordle board beside an entropy-ranked candidate list" />
   </a>
 </p>
 
