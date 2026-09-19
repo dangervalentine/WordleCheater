@@ -95,7 +95,7 @@ export default function Results({
         return (
             <div className="results-panel">
                 <div className="results-empty">
-                    Enter a guess to see possible words
+                    Click the tiles to set colors
                 </div>
             </div>
         );

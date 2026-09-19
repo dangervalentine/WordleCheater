@@ -1,50 +1,98 @@
 /* ===== Layout ===== */
 
+:root {
+  /* 50px logo + the header's 5px / 10px padding. */
+  --header-h: 65px;
+}
+
+/*
+ * Full-width shell: the bar spans the viewport edge to edge, and the content
+ * column below it keeps the measure the page had before.
+ */
 .app {
+  min-height: 100svh;
+}
+
+@supports not (height: 1svh) {
+  .app {
+    min-height: 100vh;
+  }
+}
+
+/* --------------------------- the app bar --------------------------- */
+
+/*
+ * Mark, then wordmark and credit, hard against the left edge - the same bar
+ * the sibling projects wear. `flex-start` and source order are the whole
+ * layout: nothing is pushed to the right, at any width, so the mark stays
+ * left of the name on a phone exactly as it does on a desktop.
+ *
+ * The height is fixed rather than content-derived - 50px logo + 5px above
+ * + 10px below - so anything sized against the space under the bar can
+ * subtract --header-h and get the truth.
+ */
+.app-header {
+  flex: none;
+  height: var(--header-h);
+  width: 100%;
+  padding: 5px 12px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  background-color: var(--color-bg-surface, #0a1e30);
+  border-bottom: 1px solid var(--color-border, #2a3f51);
+}
+
+.logo {
+  display: inline-block;
+  height: 50px;
+  width: 50px;
+}
+
+.header-text {
+  margin: 0 10px;
+}
+
+.header-text p {
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-family: var(--font-family-title), sans-serif;
+  /* Outfit at its default 400 reads thin beside the mark; the live siblings
+     set the wordmark in the same family at 700. */
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  color: var(--color-text-primary, #d6deeb);
+}
+
+.credit {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary, #9db2c0);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.credit:hover {
+  color: var(--color-text-primary, #d6deeb);
+}
+
+.credit:focus-visible {
+  outline: 2px solid var(--color-primary-main, #82aaff);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* --------------------------- the content column --------------------------- */
+
+.app-main {
   max-width: 960px;
   margin: 0 auto;
   padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-xxxl);
-}
-
-.app-header {
-  text-align: center;
-  margin-bottom: var(--spacing-xxl);
-}
-
-.app-title {
-  font-family: var(--font-family-title);
-  font-size: var(--font-size-display);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 8px;
-  margin-bottom: var(--spacing-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-lg);
-}
-
-.title-icon {
-  width: 1.1em;
-  height: 1.1em;
-  flex-shrink: 0;
-}
-
-.title-word {
-  color: var(--color-text-primary);
-}
-
-.title-accent {
-  color: var(--color-accent-pink);
-}
-
-.app-subtitle {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-body);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: 2px;
-}
-
-.app-main {
   display: flex;
   align-items: stretch;
   gap: var(--spacing-xxl);
@@ -70,6 +118,81 @@
   border-radius: var(--radius-lg);
   padding: var(--spacing-xxl) var(--spacing-xl);
   box-shadow: var(--shadow-large);
+}
+
+/* ===== Starter Words ===== */
+
+/*
+ * Shown in the results column before the first guess is committed. Fills the
+ * space the empty results message used to occupy on its own.
+ */
+.starter-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-xl) 0;
+}
+
+.starter-lead {
+  max-width: 34ch;
+  margin: 0 0 var(--spacing-xxxl);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-body);
+  line-height: 1.6;
+}
+
+.starter-label {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-tiny);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 2px;
+  margin-bottom: var(--spacing-lg);
+}
+
+.starter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-md);
+}
+
+.starter-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-bg-medium);
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color var(--transition-fast),
+    background var(--transition-fast), transform var(--transition-fast);
+}
+
+.starter-chip:hover,
+.starter-chip:focus-visible {
+  background: var(--color-bg-elevated);
+  border-color: var(--color-primary-main);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.starter-word {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.starter-note {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-tiny);
 }
 
 /* ===== Guess Grid ===== */
@@ -485,16 +608,25 @@
     font-size: var(--font-size-medium);
   }
 
-  .app-title {
-    font-size: var(--font-size-xxlarge);
-    letter-spacing: 4px;
-  }
-
   .constraint-summary {
     max-width: 100%;
   }
 
   .github-attribution {
     display: none;
+  }
+}
+
+/*
+ * Narrow screens: only the type changes. The order doesn't - the mark stays
+ * left of the name.
+ */
+@media (max-width: 800px) {
+  .header-text {
+    margin: 0 0 0 10px;
+  }
+
+  .header-text p {
+    font-size: 0.8rem;
   }
 }

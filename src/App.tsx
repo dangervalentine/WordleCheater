@@ -5,7 +5,9 @@ import { findResults } from "./helper";
 import GuessGrid, { createEmptyRow } from "./components/GuessGrid";
 import ConstraintSummary from "./components/ConstraintSummary";
 import Results from "./components/Results";
+import StarterWords from "./components/StarterWords";
 import { GithubAttribution } from "./components/GithubAttribution";
+import Header from "./components/Header";
 import "./App.css";
 
 export default function App() {
@@ -91,29 +93,25 @@ export default function App() {
     setRows([createEmptyRow()]);
   };
 
+  // True only before any guess is committed: on load, after RESET, and after
+  // every row has been deleted. Deliberately not keyed off results — between
+  // entering a guess and coloring it, constraints are empty and results are
+  // too, which would make the starters reappear mid-solve.
+  const showStarters = rows.length === 1 && rows[0].mode === "input";
+
+  const handleStarterPick = (word: string) => {
+    setRows([
+      {
+        letters: word.split(""),
+        colors: ["unset", "unset", "unset", "unset", "unset"],
+        mode: "color",
+      },
+    ]);
+  };
+
   return (
     <div className="app">
-      <header className="app-header">
-        <h1 className="app-title">
-          <svg className="title-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="64" height="64" rx="8" fill="#011627"/>
-            <rect x="5" y="5" width="16" height="16" rx="2.5" fill="#FFFFFF" stroke="#000" strokeWidth="1.2"/>
-            <rect x="24" y="5" width="16" height="16" rx="2.5" fill="#FFFFFF" stroke="#000" strokeWidth="1.2"/>
-            <rect x="43" y="5" width="16" height="16" rx="2.5" fill="#C3E88D" stroke="#000" strokeWidth="1.2"/>
-            <rect x="5" y="24" width="16" height="16" rx="2.5" fill="#FFFFFF" stroke="#000" strokeWidth="1.2"/>
-            <rect x="24" y="24" width="16" height="16" rx="2.5" fill="#FFCB6B" stroke="#000" strokeWidth="1.2"/>
-            <rect x="43" y="24" width="16" height="16" rx="2.5" fill="#C3E88D" stroke="#000" strokeWidth="1.2"/>
-            <rect x="5" y="43" width="16" height="16" rx="2.5" fill="#C3E88D" stroke="#000" strokeWidth="1.2"/>
-            <rect x="24" y="43" width="16" height="16" rx="2.5" fill="#C3E88D" stroke="#000" strokeWidth="1.2"/>
-            <rect x="43" y="43" width="16" height="16" rx="2.5" fill="#C3E88D" stroke="#000" strokeWidth="1.2"/>
-            <polyline points="16,34 27,46 50,18" stroke="#011627" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round"/>
-            <polyline points="16,34 27,46 50,18" stroke="var(--color-accent-pink)" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <span className="title-word">WORDLE</span>{" "}
-          <span className="title-accent">HELPER</span>
-        </h1>
-        <p className="app-subtitle">Type guesses, set colors, find answers</p>
-      </header>
+      <Header />
 
       <main className="app-main">
         <div className="left-column">
@@ -148,6 +146,8 @@ export default function App() {
                 </p>
               </div>
             </div>
+          ) : showStarters ? (
+            <StarterWords onPick={handleStarterPick} />
           ) : (
             <Results
               results={sortedResults}
